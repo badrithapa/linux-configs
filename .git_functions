@@ -1,0 +1,71 @@
+####################### GIT FUNCTIONS #######################
+
+#GIT Checkout
+function git-ck(){
+    git checkout "$(git branch | fzf-tmux -p | awk '{print $1}')"
+}
+
+# GIT Worktree - Create a new worktree for the selected branch
+function git-wt() {
+    # list branch using 'git branch' command then pass it to fzf and store the result in variable
+    branch=$(git branch | fzf)
+
+    # check if branch is empty
+    if [ -z "$branch" ]; then
+        echo "No branch selected"
+        return
+    fi
+
+    # using awk get 1 and 2 column of the result and store it in variable
+    branch_1=$(echo $branch | awk '{print $1}')
+    branch_2=$(echo $branch | awk '{print $2}')
+
+    # get current directory and store it in variable
+    current_dir=$(pwd)
+
+    if [[ "$branch_1" == "*" ]]; then
+        echo "You are already in $branch_2"
+
+    elif [[ "$branch_1" == "+" ]]; then
+        echo "Working tree is already created for $branch_2"
+        echo "Opening vscode for $branch_2"
+
+        # open vscode in one directory above the current directory
+        code $current_dir/../$branch_2
+
+    else
+        echo "Creating working tree for $branch_1"
+        git worktree add ../$branch_1 $branch_1
+        echo "Opening vscode for $branch_1"
+
+        # open vscode in one directory above the current directory
+        code $current_dir/../$branch_1
+    fi
+}
+
+# GIT Worktree - Remove a worktree
+
+function git-wt-rm() {
+    # list worktrees using 'git worktree list' command then pass it to fzf and store the result in variable
+    worktree=$(git worktree list | fzf)
+
+    echo $worktree
+    # check if worktree is empty
+    if [ -z "$worktree" ]; then
+        echo "No worktree selected"
+        return
+    fi
+
+    # using awk get 1 column of the result and store it in variable
+    selected_wt=$(echo $worktree | awk '{print $1}')
+    echo $selected_wt
+
+    # ask for confirmation
+    read -p "Are you sure you want to remove $selected_wt? (y/n) " -n 1 -r
+    echo   # move to a new line
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        # remove worktree
+        git worktree remove $selected_wt
+        echo "Worktree $selected_wt removed"
+    fi
+}
