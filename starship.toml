@@ -1,0 +1,84 @@
+format = '''[╭─](white)$directory$git_branch$git_status$package$python$conda$fill$cmd_duration$time$memory_usage$battery
+[╰──](white)$character
+'''
+
+
+[fill]
+symbol = '─'
+style = 'fg:white'
+
+[character]
+success_symbol = "[>](green)[>](bold blue)[>](green)"
+error_symbol = "[>](red)[>](bold yellow)[>](red)"
+
+# [git_branch]
+# symbol = " "
+# format = '[$symbol$branch]($style)'
+# 
+# [git_metrics]
+# disabled = false
+# format = ' [+$added]($added_style)/[-$deleted]($deleted_style) '
+
+[git_branch]
+symbol = ""
+format = '[$symbol $branch ]($style)'
+disabled = false
+
+[git_status]
+format = '[$all_status$ahead_behind ]($style)'
+disabled = false
+
+
+[package]
+symbol = "󰏗 "
+format = '[$symbol$version]($style) '
+
+[python]
+disabled = false
+format = '[$symbol$version 󰰬 $virtualenv]($style) '
+detect_files = []
+detect_extensions = []
+pyenv_version_name = false
+
+[conda]
+symbol = "🅒 "
+format = '[$symbol$environment](green) '
+
+
+[cmd_duration]
+show_milliseconds = true
+min_time = 0
+format = '⏳[$duration]($style) '
+
+[time]
+disabled = false
+use_12hr = true
+format = '🕙 [$time]($style) '
+time_format = '%I:%M %p 📅 %m/%d'
+
+[memory_usage]
+disabled = false
+threshold = -1
+symbol = '🐏 '
+format = '[$symbol$ram]($style) '
+style = 'bold blue'
+
+[battery]
+full_symbol = '🔋'
+charging_symbol = '⚡️'
+discharging_symbol = '💀'
+
+[[battery.display]] # 'bold red' style and discharging_symbol when capacity is between 0% and 10%
+threshold = 10
+style = 'bold red'
+discharging_symbol = '💀'
+
+[[battery.display]] # 'bold yellow' style and 💦 symbol when capacity is between 10% and 30%
+threshold = 30
+style = 'bold yellow'
+discharging_symbol = '💦'
+
+[[battery.display]] # 'bold green' style when capacity is between 30% and 100%
+threshold = 100
+style = 'bold green'
+discharging_symbol = '💦 '
